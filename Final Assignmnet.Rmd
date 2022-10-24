@@ -88,3 +88,25 @@ ggplot(subset(kelp_cleaned, Phylum %in% "Phaeophyta"),
   geom_vline(xintercept= 1987, color= 'red')
 ```
 
+## Kelp averages over time, by phylum #
+
+```{r plot 3}
+# Subsetting by algae: 
+algae_year <- kelp_cleaned %>%
+  select(Abundance, Year, Date, Species, Phylum) %>% 
+  filter(Phylum == "Rhodophyta" | Phylum == "Chlorophyta" |
+           Phylum == "Phaeophyta") %>% 
+  group_by(Year, Phylum) %>%
+  summarize(Mean_Abundance = mean(Abundance))
+
+
+ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance, 
+                            color=Phylum, by=Phylum)) + 
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1987, color= 'red') + 
+  scale_color_manual(values = c("mediumseagreen", "chocolate4", 
+                                "red3")) +
+  labs(x="Year", y="Mean Annual Abundance")
+
+```
+
