@@ -1,0 +1,90 @@
+---
+title: "Final Assignment Analysis: A multi-decade time series of kelp forest community structure at San Nicolas Islands, California"
+author: "Elizabeth Martin, Marjorie Mednikova, Riplee Mercer"
+date: "December 6, 2022"
+output: pdf_document
+---
+
+## Introduction
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+## Pulling in Data
+
+```{r data}
+kelp <-read.csv("final_rawdata.csv",stringsAsFactors = TRUE)
+unique(kelp$GENUS_SPECIES)
+```
+
+
+## Data Cleaning
+
+```{r data cleaning}
+
+## Removing Columns
+kelp_cleaned <- kelp %>% 
+                  select(-SAMPLE_DESC,
+                         -BIOMAS)
+
+
+## Renaming Columns
+kelp_cleaned <- kelp_cleaned %>% 
+                        rename(Abundance = ABUNDANCE, 
+                               Species = `GENUS_SPECIES`,
+                               Plot = PLOT,
+                               Latitude = LATITUDE,
+                               Longitude = LONGITUDE,
+                               Day = DAY, 
+                               Month = MONTH,
+                               Year = YEAR) 
+
+## Adding Date Column
+kelp_cleaned['Date'] <- NA
+kelp_cleaned$Date<-as.Date(with(kelp_cleaned,paste(Year,Month,Day,sep="-")),"%Y-%m-%d")
+
+
+## Adding Phylum Column
+phylum <- read.csv("phylum.csv", stringsAsFactors = TRUE)
+kelp_cleaned <- left_join(kelp_cleaned, phylum, by="Species")
+
+
+
+## Organizing Columns
+kelp_cleaned = select(kelp_cleaned, Abundance, Phylum, Species, Plot, Latitude, Longitude, Date, Year, Month, Day)
+
+
+head(kelp_cleaned)
+```
+
+
+## Graphing
+Ideas: 
+  - Sea urchin abundance before introduction of sea otters versus after             (Echinodermata Phylum)
+  - Algae (red,brown,green) abundance before introduction of sea otter versus       after
+  - Algae (red,brown,green) abundance before El Nino event versus directly after
+  - Phylum abundance in spring versus fall over time
+  - Just overall trend of dataset over time 
+  
+```{r plot 1}
+ggplot(subset(kelp_cleaned, Phylum %in% "Echinodermata"),
+       aes(Year, Abundance)) +
+  geom_point(aes(color = Species)) +
+  geom_vline(xintercept= 1987, color= 'red')
+```
+
+## Don't like this (try to be more specific with kelp?)
+```{r plot 2}
+ggplot(subset(kelp_cleaned, Phylum %in% "Phaeophyta"),
+       aes(Year, Abundance)) +
+  geom_point(aes(color = Species)) +
+  geom_vline(xintercept= 1987, color= 'red')
+```
+
