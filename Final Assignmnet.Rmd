@@ -74,11 +74,40 @@ Ideas:
   - Just overall trend of dataset over time 
 
 ## Abundance of Echindoerms before and after re-introduction of sea otters
-```{r Echinoderm Abundance}
-ggplot(subset(kelp_cleaned, Phylum %in% "Echinodermata"),
-       aes(Year, Abundance)) +
-  geom_point(aes(color = Species)) +
-  geom_vline(xintercept= 1987, color= 'red')
+```{r Echinodermata before vs after sea otters}
+## Subset by phylum
+echinodermata_year <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Date) %>% 
+  filter(Phylum == "Echinodermata") %>% 
+  group_by(Year, Phylum) %>% 
+  summarize(Mean_Abundance = mean(Abundance))
+
+## Plotting
+ggplot(data= echinodermata_year,
+       aes(x= Year, y= Mean_Abundance,
+           color= Phylum, by= Phylum)) +
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1987, color= 'black') + 
+  labs(x= "Year", y= "Mean Annual Abundance")
+```
+
+## Abundance of Echinoderms effects by El Nino Events
+```{r Echinodermata affected EL Nino}
+## Subset by phylum
+echinodermata_year <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Date) %>% 
+  filter(Phylum == "Echinodermata") %>% 
+  group_by(Year, Phylum) %>% 
+  summarize(Mean_Abundance = mean(Abundance))
+
+## Plotting
+ggplot(data= echinodermata_year,
+       aes(x= Year, y= Mean_Abundance,
+           color= Phylum, by= Phylum)) +
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1983, color= 'black') + 
+  geom_vline(xintercept= 1998, color= 'black') +
+  labs(x= "Year", y= "Mean Annual Abundance")
 ```
 
 ## Kelp averages over time, by phylum #
