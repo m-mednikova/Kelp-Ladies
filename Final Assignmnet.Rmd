@@ -72,17 +72,10 @@ Ideas:
   - Algae (red,brown,green) abundance before El Nino event versus directly after
   - Phylum abundance in spring versus fall over time
   - Just overall trend of dataset over time 
-  
-```{r plot 1}
-ggplot(subset(kelp_cleaned, Phylum %in% "Echinodermata"),
-       aes(Year, Abundance)) +
-  geom_point(aes(color = Species)) +
-  geom_vline(xintercept= 1987, color= 'red')
-```
 
-## Don't like this (try to be more specific with kelp?)
-```{r plot 2}
-ggplot(subset(kelp_cleaned, Phylum %in% "Phaeophyta"),
+## Abundance of Echindoerms before and after re-introduction of sea otters
+```{r Echinoderm Abundance}
+ggplot(subset(kelp_cleaned, Phylum %in% "Echinodermata"),
        aes(Year, Abundance)) +
   geom_point(aes(color = Species)) +
   geom_vline(xintercept= 1987, color= 'red')
@@ -107,6 +100,28 @@ ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance,
   scale_color_manual(values = c("mediumseagreen", "chocolate4", 
                                 "red3")) +
   labs(x="Year", y="Mean Annual Abundance")
+```
 
+## El Nino Events effects on the three macroalgae phylums
+```{r El Nino}
+## Subset by algae
+algae_El_Nino <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Date) %>% 
+  filter(Phylum == "Rhodophyta" | 
+         Phylum == "Chlorophyta" |
+         Phylum == "Phaeophyta") %>% 
+  group_by(Year, Phylum) %>% 
+  summarize(Mean_Abundance = mean(Abundance))
+
+## Plotting
+ggplot(data= algae_El_Nino,
+       aes(x= Year, y= Mean_Abundance,
+           color= Phylum, by= Phylum)) +
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1983, color= 'black') + 
+  geom_vline(xintercept= 1998, color= 'black') +
+  scale_color_manual(values = c("mediumseagreen", "chocolate4", 
+                                "red3")) +
+  labs(x= "Year", y= "Mean Annual Abundance")
 ```
 
