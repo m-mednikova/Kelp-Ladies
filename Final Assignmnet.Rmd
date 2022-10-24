@@ -153,4 +153,28 @@ ggplot(data= algae_El_Nino,
                                 "red3")) +
   labs(x= "Year", y= "Mean Annual Abundance")
 ```
+## Adding a Season column:
 
+```{r Seasons}
+
+# Phylum abundance by season (still in progress)
+# Create function using if-else to determine season:
+
+season <- function(Month){
+  if(Month<=3 | Month>11){return("Winter")
+    }else if (Month>=4 & Month<=6){return("Spring")
+    }else if(Month>6 & Month<=9){return("Summer")
+    }else {return("Fall")}}
+
+kelp_cleaned$Season <- vector("character", length=nrow(kelp_cleaned))
+for (i in 1:nrow(kelp_cleaned)){
+  kelp_cleaned$Season[i]<- season(kelp_cleaned$Month[i])}
+
+# Average abundance by phylum and season: 
+
+phylum_seasons <- kelp_cleaned %>%
+  select(Abundance, Year, Date, Species, Phylum, Season) %>% 
+  group_by(Season, Phylum) %>%
+  summarize(Mean_Abundance = mean(Abundance))
+
+```
