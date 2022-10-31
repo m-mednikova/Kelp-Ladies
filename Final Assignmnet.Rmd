@@ -202,3 +202,52 @@ ggplot(data=phylum_seasons, aes(x=Season, y=Mean_Abundance,
                 width=.1,color="black")
 
 ```
+#decade column
+decades <- function(Year){
+  if(Year>=1980 & Year <=1989){return("1980s")
+  }else if (Year>=1990 & Year <=1999){return("1990s")
+  }else if (Year>=2000 & Year <=2009){return("2000s")
+  }else {return("2010s")}}
+kelp_cleaned$Decades <- vector("character", length = nrow(kelp_cleaned))
+for (i in 1:nrow(kelp_cleaned)){
+  kelp_cleaned$Decades[i]<-decades(kelp_cleaned$Year[i])
+}
+#Abundance of Echinoderms in each decade
+echinoderm_decades <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Decades) %>% 
+  filter(Phylum=="Echinodermata") 
+##Plotting
+ggplot(data=echinoderm_decades,
+       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
+geom_point() + geom_line()
+##facet species
+ggplot(data=echinoderm_decades,
+       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
+  geom_point() + geom_line()+
+  facet_wrap(~Species)
+##re-introduction of sea otters
+ggplot(data=echinoderm_decades,
+       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
+  geom_point() + geom_line()+
+geom_vline(xintercept= 1987, color= 'black') 
+
+##facet species
+ggplot(data=echinoderm_decades,
+       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
+  geom_point() + geom_line()+
+  geom_vline(xintercept= 1987, color= 'black') +
+facet_wrap(~Species)
+
+##El Nino Events 
+ggplot(data=echinoderm_decades,
+       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
+  geom_point() + geom_line() +
+geom_vline(xintercept= 1983, color= 'black') + 
+  geom_vline(xintercept= 1998, color= 'black')
+##facet species
+ggplot(data=echinoderm_decades,
+       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1983, color= 'black') + 
+  geom_vline(xintercept= 1998, color= 'black')+
+facet_wrap(~Species)
