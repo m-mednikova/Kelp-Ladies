@@ -91,6 +91,20 @@ ggplot(data= echinodermata_year,
   labs(x= "Year", y= "Mean Annual Abundance")
 ```
 
+# Abundance of sea urchin species over time (including before and after otter reintroduction)
+urchin_species <- kelp_cleaned %>%
+select(Abundance, Year, Date, Species) %>% 
+  filter(Species == "Strongylocentrotus franciscanus" | 
+           Species =="Strongylocentrotus purpuratus") %>% 
+  group_by(Year, Species) %>%
+  summarize(Mean_Abundance = mean(Abundance))
+
+ggplot(data=urchin_species,aes(x=Year, y=Mean_Abundance,
+                                color=Species, by=Species)) +
+  geom_line(aes(color = Species)) +
+  geom_vline(xintercept= 1987, color= 'red')
+
+
 ## Abundance of Echinoderms effects by El Nino Events
 ```{r Echinodermata affected EL Nino}
 ## Subset by phylum
