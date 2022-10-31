@@ -189,6 +189,16 @@ for (i in 1:nrow(kelp_cleaned)){
 phylum_seasons <- kelp_cleaned %>%
   select(Abundance, Year, Date, Species, Phylum, Season) %>% 
   group_by(Season, Phylum) %>%
-  summarize(Mean_Abundance = mean(Abundance))
+  summarize(Mean_Abundance = mean(Abundance), SD = sd(Abundance))
+  
+# Plotting average seasonal abundance by phylum, with error bars showing standard deviation:
+
+ggplot(data=phylum_seasons, aes(x=Season, y=Mean_Abundance, 
+                          by=Phylum)) + 
+  geom_col(aes(fill=Phylum)) + 
+  labs(x="Year", y="Mean Seasonal Abundance") +  
+  facet_wrap(~Phylum, scales="free") + 
+  geom_errorbar(aes(ymin=Mean_Abundance-SD, ymax=Mean_Abundance+SD),
+                width=.1,color="black")
 
 ```
