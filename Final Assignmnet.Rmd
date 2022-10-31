@@ -251,3 +251,10 @@ ggplot(data=echinoderm_decades,
   geom_vline(xintercept= 1983, color= 'black') + 
   geom_vline(xintercept= 1998, color= 'black')+
 facet_wrap(~Species)
+##El Nino events and sea otters 
+ggplot(data=echinoderm_decades,
+       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1983, color= 'black') + 
+  geom_vline(xintercept= 1998, color= 'black')+
+  geom_vline(xintercept= 1987, color= 'black')
