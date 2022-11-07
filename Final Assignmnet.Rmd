@@ -65,114 +65,21 @@ head(kelp_cleaned)
 ```
 
 
-## Graphing
-Ideas: 
-  - Sea urchin abundance before introduction of sea otters versus after             (Echinodermata Phylum)
-  - Algae (red,brown,green) abundance before introduction of sea otter versus       after
-  - Algae (red,brown,green) abundance before El Nino event versus directly after
-  - Phylum abundance in spring versus fall over time
-  - Just overall trend of dataset over time 
+## Graphs
 
-## Abundance of Echindoerms before and after re-introduction of sea otters
-```{r Echinodermata before vs after sea otters}
-## Subset by phylum
-echinodermata_year <- kelp_cleaned %>% 
-  select(Abundance, Phylum, Species, Year, Date) %>% 
-  filter(Phylum == "Echinodermata") %>% 
-  group_by(Year, Phylum) %>% 
-  summarize(Mean_Abundance = mean(Abundance))
+(1) Seasonal patterns, by phylum
+(2) Echinoderms over time (before/after sea otters and El Nino events)
+(3) Echinoderms by decade
+(4) Sea urchins over time (before/after sea otters and El Nino events)
+(5) Algal abundance over time (before/after sea otters and El Nino events)
 
-## Plotting
-ggplot(data= echinodermata_year,
-       aes(x= Year, y= Mean_Abundance,
-           color= Phylum, by= Phylum)) +
-  geom_point() + geom_line() +
-  geom_vline(xintercept= 1987, color= 'black') + 
-  labs(x= "Year", y= "Mean Annual Abundance")
-```
-
-# Abundance of sea urchin species over time (including before and after otter reintroduction)
-urchin_species <- kelp_cleaned %>%
-select(Abundance, Year, Date, Species) %>% 
-  filter(Species == "Strongylocentrotus franciscanus" | 
-           Species =="Strongylocentrotus purpuratus") %>% 
-  group_by(Year, Species) %>%
-  summarize(Mean_Abundance = mean(Abundance))
-
-ggplot(data=urchin_species,aes(x=Year, y=Mean_Abundance,
-                                color=Species, by=Species)) +
-  geom_line(aes(color = Species)) +
-  geom_vline(xintercept= 1987, color= 'red')
-
-
-## Abundance of Echinoderms effects by El Nino Events
-```{r Echinodermata affected EL Nino}
-## Subset by phylum
-echinodermata_year <- kelp_cleaned %>% 
-  select(Abundance, Phylum, Species, Year, Date) %>% 
-  filter(Phylum == "Echinodermata") %>% 
-  group_by(Year, Phylum) %>% 
-  summarize(Mean_Abundance = mean(Abundance))
-
-## Plotting
-ggplot(data= echinodermata_year,
-       aes(x= Year, y= Mean_Abundance,
-           color= Phylum, by= Phylum)) +
-  geom_point() + geom_line() +
-  geom_vline(xintercept= 1983, color= 'black') + 
-  geom_vline(xintercept= 1998, color= 'black') +
-  labs(x= "Year", y= "Mean Annual Abundance")
-```
-
-## Kelp averages over time, by phylum #
-
-```{r plot 3}
-# Subsetting by algae: 
-algae_year <- kelp_cleaned %>%
-  select(Abundance, Year, Date, Species, Phylum) %>% 
-  filter(Phylum == "Rhodophyta" | Phylum == "Chlorophyta" |
-           Phylum == "Phaeophyta") %>% 
-  group_by(Year, Phylum) %>%
-  summarize(Mean_Abundance = mean(Abundance))
-
-
-ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance, 
-                            color=Phylum, by=Phylum)) + 
-  geom_point() + geom_line() +
-  geom_vline(xintercept= 1987, color= 'red') + 
-  scale_color_manual(values = c("mediumseagreen", "chocolate4", 
-                                "red3")) +
-  labs(x="Year", y="Mean Annual Abundance")
-```
-
-## El Nino Events effects on the three macroalgae phylums
-```{r El Nino}
-## Subset by algae
-algae_El_Nino <- kelp_cleaned %>% 
-  select(Abundance, Phylum, Species, Year, Date) %>% 
-  filter(Phylum == "Rhodophyta" | 
-         Phylum == "Chlorophyta" |
-         Phylum == "Phaeophyta") %>% 
-  group_by(Year, Phylum) %>% 
-  summarize(Mean_Abundance = mean(Abundance))
-
-## Plotting
-ggplot(data= algae_El_Nino,
-       aes(x= Year, y= Mean_Abundance,
-           color= Phylum, by= Phylum)) +
-  geom_point() + geom_line() +
-  geom_vline(xintercept= 1983, color= 'black') + 
-  geom_vline(xintercept= 1998, color= 'black') +
-  scale_color_manual(values = c("mediumseagreen", "chocolate4", 
-                                "red3")) +
-  labs(x= "Year", y= "Mean Annual Abundance")
-```
-## Adding a Season column:
+## Seasonal patterns, by phylum
 
 ```{r Seasons}
 
-# Phylum abundance by season (still in progress)
-# Create function using if-else to determine season:
+# Phylum abundance by season
+
+# Create function using if-else statement to determine season:
 
 season <- function(Month){
   if(Month<=3 | Month>11){return("Winter")
@@ -200,9 +107,34 @@ ggplot(data=phylum_seasons, aes(x=Season, y=Mean_Abundance,
   facet_wrap(~Phylum, scales="free") + 
   geom_errorbar(aes(ymin=Mean_Abundance-SD, ymax=Mean_Abundance+SD),
                 width=.1,color="black")
-
 ```
+
+## Abundance of Echinoderms over time, with lines for otter reintroduction and El Nino ##
+
+```{r Echinodermata before vs after sea otters}
+## Subset by phylum
+echinodermata_year <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Date) %>% 
+  filter(Phylum == "Echinodermata") %>% 
+  group_by(Year, Phylum) %>% 
+  summarize(Mean_Abundance = mean(Abundance))
+
+## Plotting
+ggplot(data= echinodermata_year,
+       aes(x= Year, y= Mean_Abundance,
+           color= Phylum, by= Phylum)) +
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1987, color= 'red') + 
+  geom_vline(xintercept= 1983, color= 'blue') + 
+  geom_vline(xintercept= 1998, color= 'blue') +
+  labs(x= "Year", y= "Mean Annual Abundance")
+```
+# Abundance of Echinoderms over time, grouped by decade ##
+
+```{r Decades}
+
 #decade column
+
 decades <- function(Year){
   if(Year>=1980 & Year <=1989){return("1980s")
   }else if (Year>=1990 & Year <=1999){return("1990s")
@@ -212,19 +144,23 @@ kelp_cleaned$Decades <- vector("character", length = nrow(kelp_cleaned))
 for (i in 1:nrow(kelp_cleaned)){
   kelp_cleaned$Decades[i]<-decades(kelp_cleaned$Year[i])
 }
+
 #Abundance of Echinoderms in each decade
 echinoderm_decades <- kelp_cleaned %>% 
   select(Abundance, Phylum, Species, Year, Decades) %>% 
   filter(Phylum=="Echinodermata") 
+  
 ##Plotting
 ggplot(data=echinoderm_decades,
        aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
 geom_point() + geom_line()
+
 ##facet species
 ggplot(data=echinoderm_decades,
        aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
   geom_point() + geom_line()+
   facet_wrap(~Species)
+  
 ##re-introduction of sea otters
 ggplot(data=echinoderm_decades,
        aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
@@ -244,6 +180,7 @@ ggplot(data=echinoderm_decades,
   geom_point() + geom_line() +
 geom_vline(xintercept= 1983, color= 'black') + 
   geom_vline(xintercept= 1998, color= 'black')
+  
 ##facet species
 ggplot(data=echinoderm_decades,
        aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
@@ -251,6 +188,7 @@ ggplot(data=echinoderm_decades,
   geom_vline(xintercept= 1983, color= 'black') + 
   geom_vline(xintercept= 1998, color= 'black')+
 facet_wrap(~Species)
+
 ##El Nino events and sea otters 
 ggplot(data=echinoderm_decades,
        aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
@@ -258,3 +196,46 @@ ggplot(data=echinoderm_decades,
   geom_vline(xintercept= 1983, color= 'black') + 
   geom_vline(xintercept= 1998, color= 'black')+
   geom_vline(xintercept= 1987, color= 'black')
+
+```
+
+# Abundance of sea urchin species specifically
+```{r urchins}
+urchin_species <- kelp_cleaned %>%
+select(Abundance, Year, Date, Species) %>% 
+  filter(Species == "Strongylocentrotus franciscanus" | 
+           Species =="Strongylocentrotus purpuratus") %>% 
+  group_by(Year, Species) %>%
+  summarize(Mean_Abundance = mean(Abundance))
+
+ggplot(data=urchin_species,aes(x=Year, y=Mean_Abundance,
+                                color=Species, by=Species)) +
+  geom_line(aes(color = Species)) +
+  geom_vline(xintercept= 1987, color= 'red')+
+  geom_vline(xintercept= 1983, color= 'blue') + 
+  geom_vline(xintercept= 1998, color= 'blue') +
+  labs(x= "Year", y= "Mean Annual Abundance")
+```
+
+## Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino #
+
+```{r kelp}
+# Subsetting by algae: 
+algae_year <- kelp_cleaned %>%
+  select(Abundance, Year, Date, Species, Phylum) %>% 
+  filter(Phylum == "Rhodophyta" | Phylum == "Chlorophyta" |
+           Phylum == "Phaeophyta") %>% 
+  group_by(Year, Phylum) %>%
+  summarize(Mean_Abundance = mean(Abundance))
+
+
+ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance, 
+                            color=Phylum, by=Phylum)) + 
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1987, color= 'red') + 
+  geom_vline(xintercept= 1983, color= 'blue') + 
+  geom_vline(xintercept= 1998, color= 'blue') +
+  scale_color_manual(values = c("mediumseagreen", "chocolate4", 
+                                "red3")) +
+  labs(x="Year", y="Mean Annual Abundance")
+```
