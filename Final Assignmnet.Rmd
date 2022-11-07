@@ -239,3 +239,25 @@ ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance,
                                 "red3")) +
   labs(x="Year", y="Mean Annual Abundance")
 ```
+
+## Statistics: Linear regression to see relationship between annual abundances of brown algae and echinoderms
+
+```{r lm}
+# Echinoderms versus algae, by year #
+echino.algae <- kelp_cleaned %>%
+  select(Abundance, Year, Date, Species, Phylum) %>%
+  filter(Phylum == "Phaeophyta" |Phylum =="Echinodermata") %>%
+  group_by(Year, Phylum) %>%
+  summarize(Mean_Abundance =mean(Abundance))
+
+echino.algae <- echino.algae %>% 
+  pivot_wider(names_from = Phylum, values_from = Mean_Abundance)
+
+ggplot(data=echino.algae, aes(x=Echinodermata, y=Phaeophyta))+
+  geom_point() + geom_smooth(method="lm") + labs (x="Echinoderms (annual abundance)", y="Brown algae (annual abundance)")
+
+echino.model <- lm(data=echino.algae, Phaeophyta~Echinodermata)
+summary(echino.model)
+
+# p value of 0.2118, R squared value of 0.05. No significant relationship observed. 
+```
