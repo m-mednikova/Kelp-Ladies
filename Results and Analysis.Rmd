@@ -118,3 +118,5 @@ ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance,
                                 "red3")) +
   labs(x="Year", y="Mean Annual Abundance")
 ```
+
+Chlorophyta is green algae, Rhodophyta is red, and Phaeophyta is brown algae. Chlorophyta levels remain pretty consistant over the time period, while Rhodophyta and Phaeophyta not so much. El Nino events are depicted by black lines and the reintroduction of sea otters by the blue line. Kelp species can be found in the Phaeophyta phylum. El Nino events are known to cause a decrease in kelp forest populations. This can be visualized by the drop in the graph after the black lines in 1983 and 1998. Sea otters are known predators of a well-known grazer of kelp, sea urchins, so after the reintroduction it can be expected kelp populations would increase due to the lack of grazing from urchins. This is not really visualized on the graph though. 
