@@ -96,7 +96,7 @@ Sea urhchins are within the phylum echinodermata. They are a known grazer of alg
 
 
 
-## Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino #
+## Mean abundance of algae (by phyla) over time, with lines for otter introduction and El Nino #
 
 ```{r kelp}
 ## Subsetting by algae: 
