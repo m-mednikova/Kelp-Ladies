@@ -1,0 +1,120 @@
+---
+title: "Results and Analysis"
+author: "Elizabeth Martin, Marjorie Mednikova, Riplee Mercer"
+date: "November 15, 2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r data}
+kelp <-read.csv("final_rawdata.csv",stringsAsFactors = TRUE)
+```
+
+```{r data cleaning}
+## Removing Columns
+kelp_cleaned <- kelp %>% 
+                  select(-SAMPLE_DESC,
+                         -BIOMAS)
+
+## Renaming Columns
+kelp_cleaned <- kelp_cleaned %>% 
+                        rename(Abundance = ABUNDANCE, 
+                               Species = `GENUS_SPECIES`,
+                               Plot = PLOT,
+                               Latitude = LATITUDE,
+                               Longitude = LONGITUDE,
+                               Day = DAY, 
+                               Month = MONTH,
+                               Year = YEAR) 
+
+## Adding Date Column
+kelp_cleaned['Date'] <- NA
+kelp_cleaned$Date<-as.Date(with(kelp_cleaned,paste(Year,Month,Day,sep="-")),"%Y-%m-%d")
+
+## Adding Phylum Column
+phylum <- read.csv("phylum.csv", stringsAsFactors = TRUE)
+kelp_cleaned <- left_join(kelp_cleaned, phylum, by="Species")
+
+## Organizing Columns
+kelp_cleaned = select(kelp_cleaned, Abundance, Phylum, Species, Plot, Latitude, Longitude, Date, Year, Month, Day)
+```
+
+
+
+## Abundance of Echinoderms over time, with lines for otter reintroduction and El Nino ##
+
+```{r Echinodermata w/ sea otters and El Nino events}
+## Subset by phylum
+echinodermata_year <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Date) %>% 
+  filter(Phylum == "Echinodermata") %>% 
+  group_by(Year, Phylum) %>% 
+  summarize(Mean_Abundance = mean(Abundance))
+
+## Plotting
+ggplot(data= echinodermata_year,
+       aes(x= Year, y= Mean_Abundance,
+           color= Phylum, by= Phylum)) +
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1987, color= 'blue') + 
+  geom_vline(xintercept= 1983, color= 'black') + 
+  geom_vline(xintercept= 1998, color= 'black') +
+  labs(x= "Year", y= "Mean Annual Abundance")
+```
+
+This graph is evaluating the population of echinoderms over time, with lines highlighting the reintroduction of sea otters as well as two El Nino events. The black lines represent the El Nino events, while the blue line represents the reintroduction of sea otters to the San Nicolas Islands. Sea otters are known predators of echinoderms, sea urchins and sea stars especially. It can be theorized that once the population of otters is brought back into the community, the echinoderm population will be negatively impacted due to the predator-prey relationship. It can be see at that the echinoderm population does decrease overtime after the year 1987, when the otters were reintroduced. 
+
+
+
+# Abundance of sea urchin species specifically
+
+```{r urchins}
+urchin_species <- kelp_cleaned %>%
+select(Abundance, Year, Date, Species) %>% 
+  filter(Species == "Strongylocentrotus franciscanus" | 
+           Species =="Strongylocentrotus purpuratus") %>% 
+  group_by(Year, Species) %>%
+  summarize(Mean_Abundance = mean(Abundance))
+
+## Plotting
+ggplot(data=urchin_species,aes(x=Year, y=Mean_Abundance,
+                                color=Species, by=Species)) +
+  geom_line(aes(color = Species)) +
+  geom_vline(xintercept= 1987, color= 'blue')+
+  geom_vline(xintercept= 1983, color= 'black') + 
+  geom_vline(xintercept= 1998, color= 'black') +
+  labs(x= "Year", y= "Mean Annual Abundance")
+```
+
+Sea urhchins are within the phylum echinodermata. They are a known grazer of algae, kelp being a large food source for them. El Nino events produce warmer waters, which in turn increased sea urchin recruitment (Dayton, Tegner 1991). These events are also known to decrease kelp populations. With growing urchin populations and declining kelp forest, there becomes an increase grazing demand. *Strongylocentrotus franciscanus* is the red sea urchin and *Strongylocentrotus purpuratus* is the purple sea urchin. Both urchins live in the kelp forests due to the high food source. 
+
+
+
+## Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino #
+
+```{r kelp}
+## Subsetting by algae: 
+algae_year <- kelp_cleaned %>%
+  select(Abundance, Year, Date, Species, Phylum) %>% 
+  filter(Phylum == "Rhodophyta" | Phylum == "Chlorophyta" |
+           Phylum == "Phaeophyta") %>% 
+  group_by(Year, Phylum) %>%
+  summarize(Mean_Abundance = mean(Abundance))
+
+## Plotting
+ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance, 
+                            color=Phylum, by=Phylum)) + 
+  geom_point() + geom_line() +
+  geom_vline(xintercept= 1987, color= 'red') + 
+  geom_vline(xintercept= 1983, color= 'blue') + 
+  geom_vline(xintercept= 1998, color= 'blue') +
+  scale_color_manual(values = c("mediumseagreen", "chocolate4", 
+                                "red3")) +
+  labs(x="Year", y="Mean Annual Abundance")
+```
