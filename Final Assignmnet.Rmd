@@ -3,6 +3,7 @@ title: "Final Assignment Analysis: A multi-decade time series of kelp forest com
 author: "Elizabeth Martin, Marjorie Mednikova, Riplee Mercer"
 date: "December 6, 2022"
 output: pdf_document
+fig_caption: yes
 ---
 
 ## Introduction
@@ -19,7 +20,7 @@ library(dplyr)
 
 ## Pulling in Data
 
-```{r data}
+```{r data, include=FALSE}
 kelp <-read.csv("final_rawdata.csv",stringsAsFactors = TRUE)
 unique(kelp$GENUS_SPECIES)
 ```
@@ -27,7 +28,7 @@ unique(kelp$GENUS_SPECIES)
 
 ## Data Cleaning
 
-```{r data cleaning}
+```{r data cleaning, include=FALSE}
 
 ## Removing Columns
 kelp_cleaned <- kelp %>% 
@@ -75,12 +76,10 @@ head(kelp_cleaned)
 
 ## Seasonal patterns, by phylum
 
-```{r Seasons}
-
+```{r Seasons, fig.cap="\\label{fig:season} Mean seasonal abundance of each phyla observed at San Nicolas Island, from 1980 to 2011."}
 # Phylum abundance by season
 
 # Create function using if-else statement to determine season:
-
 season <- function(Month){
   if(Month<=3 | Month>11){return("Winter")
     }else if (Month>=4 & Month<=6){return("Spring")
@@ -88,30 +87,45 @@ season <- function(Month){
     }else {return("Fall")}}
 
 kelp_cleaned$Season <- vector("character", length=nrow(kelp_cleaned))
+
 for (i in 1:nrow(kelp_cleaned)){
   kelp_cleaned$Season[i]<- season(kelp_cleaned$Month[i])}
 
 # Average abundance by phylum and season: 
-
 phylum_seasons <- kelp_cleaned %>%
   select(Abundance, Year, Date, Species, Phylum, Season) %>% 
+  filter(Phylum!="Unknown") %>%
   group_by(Season, Phylum) %>%
+  mutate(Season = factor(Season, levels=c("Spring", "Summer", "Fall", "Winter"))) %>%
   summarize(Mean_Abundance = mean(Abundance), SD = sd(Abundance))
-  
-# Plotting average seasonal abundance by phylum, with error bars showing standard deviation:
 
-ggplot(data=phylum_seasons, aes(x=Season, y=Mean_Abundance, 
-                          by=Phylum)) + 
+# Plotting average seasonal abundance by phylum, with error bars showing standard deviation:
+ggplot(data=phylum_seasons, aes(x=Season, y=Mean_Abundance)) + 
   geom_col(aes(fill=Phylum)) + 
   labs(x="Year", y="Mean Seasonal Abundance") +  
   facet_wrap(~Phylum, scales="free") + 
-  geom_errorbar(aes(ymin=Mean_Abundance-SD, ymax=Mean_Abundance+SD),
-                width=.1,color="black")
+  geom_errorbar(aes(ymin=Mean_Abundance-SD, ymax=Mean_Abundance+SD),width=.1,color="black") +
+  theme_bw()+
+  theme(legend.position="none", axis.text.x = element_text(size = 7))
+
+# ANOVA for season, for Phaeophyta and Echinodermata
+
+phaeo.aov <- kelp_cleaned %>%
+  filter(Phylum=="Phaeophyta")
+
+phaeo.aov <- summary(aov(data=phaeo.aov, Abundance~Season))
+
+echino.aov <- kelp_cleaned %>%
+  filter(Phylum=="Echinodermata")
+
+echino.aov <- summary(aov(data=echino.aov, Abundance~Season))
 ```
+Few phyla exhibited seasonal patterns, especially given the high standard deviation within each season (Figure \ref{fig:season}). Both echinoderms and brown algae (Phaeophyta) were observed to have the highest mean abundance within summer months. Season was found to significantly influence brown algal abundance (p=`r phaeo.aov[[1]][[1,"Pr(>F)"]]`) as well as echinoderm abundance (p=`r echino.aov[[1]][[1,"Pr(>F)"]]`).
 
 ## Abundance of Echinoderms over time, with lines for otter reintroduction and El Nino ##
 
-```{r Echinodermata before vs after sea otters}
+```{r Echinodermata before vs after sea otters, fig.cap="\\label{fig:echino} Mean abundance of echinoderms observed at San Nicolas Island, from 1980 to 2011. Gray shading indicates 1982-1983 and 1997-1998 El Nino events. The dashed vertical line represents the 1987 reintroduction of sea otters."}
+
 ## Subset by phylum
 echinodermata_year <- kelp_cleaned %>% 
   select(Abundance, Phylum, Species, Year, Date) %>% 
@@ -120,20 +134,24 @@ echinodermata_year <- kelp_cleaned %>%
   summarize(Mean_Abundance = mean(Abundance))
 
 ## Plotting
-ggplot(data= echinodermata_year,
-       aes(x= Year, y= Mean_Abundance,
-           color= Phylum, by= Phylum)) +
-  geom_point() + geom_line() +
-  geom_vline(xintercept= 1987, color= 'red') + 
-  geom_vline(xintercept= 1983, color= 'blue') + 
-  geom_vline(xintercept= 1998, color= 'blue') +
-  labs(x= "Year", y= "Mean Annual Abundance")
+ggplot(data= echinodermata_year, aes(x= Year, y= Mean_Abundance, 
+        by= Phylum, color=Phylum)) +
+    geom_rect(aes(xmin=1982, xmax=1983, ymin=-Inf, ymax=Inf),
+                  fill="gray", alpha=0.5, color="gray") +
+    geom_rect(aes(xmin=1997, xmax=1998, ymin=-Inf, ymax=Inf),
+                  fill="gray", alpha=0.5, color="gray") +
+    geom_point() + geom_line() + geom_vline(xintercept= 1987,
+                  color= 'black', linetype="dashed") + 
+  labs(x= "Year", y= "Mean Echinoderm Abundance") + 
+  theme(legend.position="none")
 ```
-# Abundance of Echinoderms over time, grouped by decade ##
+Echinoderm abundance exhibited notable changes that coincided with multiple environmental events (Figure \ref{fig:echino}). Declines were observed during both El Nino events, in 1982-1983 and 1997-1998. Echinoderm populations also declined following the 1987 sea otter reintroduction. Finally, echinoderm abundance increased substantially following both El Nino events, and returned to pre-otter introduction in the early 2000s. Abundance has oscillated since.  
 
-```{r Decades}
+# Abundance of Echinoderms over time, grouped by decade -- *****NOTE:: suggestions for consolidation at the bottom of this code chunk
 
-#decade column
+```{r Decades, fig.cap="\\label{fig:decades} Mean abundance of echinoderms at San Nicolas Island, by decade."}
+
+#Creating a Decades column:
 
 decades <- function(Year){
   if(Year>=1980 & Year <=1989){return("1980s")
@@ -196,30 +214,55 @@ ggplot(data=echinoderm_decades,
   geom_vline(xintercept= 1983, color= 'black') + 
   geom_vline(xintercept= 1998, color= 'black')+
   geom_vline(xintercept= 1987, color= 'black')
+  
+# ***ADDED***** ANOVA testing whether decades is a significant factor in Echinoderm abundance variation:
+decades.aov <- summary(aov(data=echinoderm_decades, Abundance~Decades))
+
+# ***ADDED***** Averages and bar graph
+echinoderm_decades2 <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Decades) %>% 
+  filter(Phylum=="Echinodermata") %>%
+  group_by(Decades) %>%
+  summarize(MeanAbundance=mean(Abundance), SD=sd(Abundance))
+
+ggplot(data=echinoderm_decades2, aes(x= Decades, y=MeanAbundance)) + geom_col() + labs(x="Decade", y="Mean Echinoderm Abundance") + 
+  theme_bw() + theme(legend.position="none", 
+                      axis.text.x = element_text(size = 7)) +
+  geom_errorbar(aes(ymin=MeanAbundance-SD,
+                  ymax=MeanAbundance+SD),width=.1,color="black")
 
 ```
+The differences in echinoderm abundance observed between decades were found to be significant using a one-way ANOVA, with decade as a factor (p=`r decades.aov[[1]][[1,"Pr(>F)"]]`). The decade with lowest echinoderm abundance was the 1990s (Figure \ref{fig:decades}).
 
-# Abundance of sea urchin species specifically
-```{r urchins}
-urchin_species <- kelp_cleaned %>%
-select(Abundance, Year, Date, Species) %>% 
-  filter(Species == "Strongylocentrotus franciscanus" | 
-           Species =="Strongylocentrotus purpuratus") %>% 
-  group_by(Year, Species) %>%
-  summarize(Mean_Abundance = mean(Abundance))
+# ALSO ADDED: This would consolidate the old sea urchins graph with echinoderm species graph ####
 
-ggplot(data=urchin_species,aes(x=Year, y=Mean_Abundance,
-                                color=Species, by=Species)) +
-  geom_line(aes(color = Species)) +
-  geom_vline(xintercept= 1987, color= 'red')+
-  geom_vline(xintercept= 1983, color= 'blue') + 
-  geom_vline(xintercept= 1998, color= 'blue') +
-  labs(x= "Year", y= "Mean Annual Abundance")
+```{r decade.facet, fig.cap="\\label{fig:decade.facet} Mean abundance of each echinoderm species observed at San Nicolas Island, by decade."}
+
+##facet by species
+
+echinoderm_decades3 <- kelp_cleaned %>% 
+  select(Abundance, Phylum, Species, Year, Decades) %>% 
+  filter(Phylum=="Echinodermata") %>%
+  group_by(Year, Decades, Species) %>%
+  summarize(MeanAbundance=mean(Abundance))
+
+ggplot(data=echinoderm_decades3,
+       aes(x= Year, y=MeanAbundance, color= Decades, by=Species))+
+  geom_rect(aes(xmin=1982, xmax=1983, ymin=-Inf, ymax=Inf),
+                  fill="gray", alpha=0.5, color="gray") +
+  geom_rect(aes(xmin=1997, xmax=1998, ymin=-Inf, ymax=Inf),
+                  fill="gray", alpha=0.5, color="gray") +
+    geom_point() + geom_line()+
+  geom_vline(xintercept= 1987, color= 'black', linetype="dashed")+
+facet_wrap(~Species, scales="free") 
+
 ```
+Echinoderm abundance also varied by species throughout the decades included within this dataset. The 1990s (shown in green in Figure \ref{fig:decade.facet}) consistently demonstrated lower echinoderm abundance among species. Strongylocentrotus species (sea urchins) showed different temporal pattens by species, with S. purpuratus showing highest mean abundances within the 2000s, and S. franciscanus showing highest mean abundances within the 1980s, albeit prior to both the 1982 El Nino event and the 1987 otter reintroduction. 
 
 ## Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino #
 
-```{r kelp}
+```{r kelp, fig.cap="\\label{fig:kelp} Mean abundance of each kelp phylum observed at San Nicolas Island, from 1980 to 2011 Gray shading indicates El Nino events; dashed line indicates sea otter reintroduction."}
+
 # Subsetting by algae: 
 algae_year <- kelp_cleaned %>%
   select(Abundance, Year, Date, Species, Phylum) %>% 
@@ -228,21 +271,24 @@ algae_year <- kelp_cleaned %>%
   group_by(Year, Phylum) %>%
   summarize(Mean_Abundance = mean(Abundance))
 
-
 ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance, 
                             color=Phylum, by=Phylum)) + 
+  geom_rect(aes(xmin=1982, xmax=1983, ymin=-Inf, ymax=Inf),
+                  fill="gray", alpha=0.5, color="gray") +
+  geom_rect(aes(xmin=1997, xmax=1998, ymin=-Inf, ymax=Inf),
+                  fill="gray", alpha=0.5, color="gray") +
   geom_point() + geom_line() +
-  geom_vline(xintercept= 1987, color= 'red') + 
-  geom_vline(xintercept= 1983, color= 'blue') + 
-  geom_vline(xintercept= 1998, color= 'blue') +
+  geom_vline(xintercept= 1987, color= 'black', linetype="dashed")+
   scale_color_manual(values = c("mediumseagreen", "chocolate4", 
                                 "red3")) +
   labs(x="Year", y="Mean Annual Abundance")
 ```
+Figure \ref{fig:kelp} shows the change in abundance over time for each phylum of algae. No consistent patterns were observed that applied to all algae phyla; however, some trends were noted within groups. For brown algae (Phaeophyta), declines in abundance took place after both El Nino events, while red algae (Phaeophyta) increased in abundance after both. Brown algae also declined after 1987 (the year of otter reintroduction) following an initial increase. Red algae did not exhibit any notable change in abundance post-reintroduction. Green algal abundance remained relatively low throughout all decades monitored, and did not have a notable response to either El Nino events or otter reintroduction.
 
 ## Statistics: Linear regression to see relationship between annual abundances of brown algae and echinoderms
 
-```{r lm}
+```{r lm, fig.cap="\\label{fig:lm} Relationship between mean annual abundance of echinoderms and brown algae, including best fit line."}
+
 # Echinoderms versus algae, by year #
 echino.algae <- kelp_cleaned %>%
   select(Abundance, Year, Date, Species, Phylum) %>%
@@ -257,7 +303,6 @@ ggplot(data=echino.algae, aes(x=Echinodermata, y=Phaeophyta))+
   geom_point() + geom_smooth(method="lm") + labs (x="Echinoderms (annual abundance)", y="Brown algae (annual abundance)")
 
 echino.model <- lm(data=echino.algae, Phaeophyta~Echinodermata)
-summary(echino.model)
-
-# p value of 0.2118, R squared value of 0.05. No significant relationship observed. 
+echino.model <- summary(echino.model)
 ```
+A linear regression model run on mean annual abundance of both echinoderms and brown algae (Figure \ref{fig:lm}) indicated that there was no significant correlation between the two species' abundances (p=`r round(echino.model$coefficients[2,4],2)`). The R squared value of `r round(echino.model$r.squared, 2)` was also low, indicating little to no linear relationship between the two phyla.  
