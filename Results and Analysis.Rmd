@@ -64,7 +64,7 @@ ggplot(data=annual.means, aes(x=Year, y=MeanAbundance,
 
 Each phylum exhibited different trends in abundance over time (Figure \ref{fig:time}). Overall increasing abundance was noted for Annelida and Cnidaria. Several phyla exhibited large peaks, including Crustacea, Chlorophyta (green algae), Ochrophyta, and Bryozoa. Notably, many phyla demonstrated large increases in mean abundance within the early 2000s. Finally, Phaeophyta (brown algae) demonstrated an overall decreasing trend, with several notable drops prior to 1985 and 2000. 
 
-## Seasonal patterns, by phylum
+### Seasonal patterns, by phylum
 
 ```{r Seasons, message=FALSE, fig.cap="\\label{fig:season} Mean seasonal abundance of each phyla observed at San Nicolas Island, from 1980 to 2011."}
 # Phylum abundance by season
@@ -102,7 +102,7 @@ echino.aov <- summary(aov(data=echino.aov, Abundance~Season))
 ```
 Few phyla exhibited seasonal patterns, especially given the high standard deviation within each season (Figure \ref{fig:season}). Both echinoderms and brown algae (Phaeophyta) were observed to have the highest mean abundance within summer months. Season was found to significantly influence brown algal abundance (p=`r phaeo.aov[[1]][[1,"Pr(>F)"]]`) as well as echinoderm abundance (p=`r echino.aov[[1]][[1,"Pr(>F)"]]`).
 
-## Abundance of Echinoderms over time, with lines for otter reintroduction and El Nino ##
+### Abundance of Echinoderms over time, with lines for otter reintroduction and El Nino
 
 ```{r Echinodermata before vs after sea otters, message=FALSE, fig.cap="\\label{fig:echino} Mean abundance of echinoderms observed at San Nicolas Island, from 1980 to 2011. Gray shading indicates 1982-1983 and 1997-1998 El Nino events. The dashed vertical line represents the 1987 reintroduction of sea otters."}
 ## Subset by phylum
@@ -125,7 +125,7 @@ ggplot(data= echinodermata_year, aes(x= Year, y= Mean_Abundance,
 ```
 Echinoderm abundance exhibited notable changes that coincided with multiple environmental events (Figure \ref{fig:echino}). Declines were observed during both El Nino events, in 1982-1983 and 1997-1998. Echinoderm populations also declined following the 1987 sea otter reintroduction. Finally, echinoderm abundance increased substantially following both El Nino events, and returned to pre-otter introduction in the early 2000s. Abundance has oscillated since.  
 
-# Abundance of Echinoderms over time, grouped by decade 
+### Abundance of Echinoderms over time, grouped by decade 
 
 ```{r Decades, message=FALSE, fig.height=3, fig.cap="\\label{fig:decades} Mean abundance of echinoderms at San Nicolas Island, by decade."}
 #Creating a Decades column:
@@ -159,7 +159,7 @@ ggplot(data=echinoderm_decades2, aes(x= Decades, y=MeanAbundance)) + geom_col() 
 ```
 The differences in echinoderm abundance observed between decades were found to be significant using a one-way ANOVA, with decade as a factor (p=`r decades.aov[[1]][[1,"Pr(>F)"]]`). The decade with lowest echinoderm abundance was the 1990s (Figure \ref{fig:decades}).
 
-# Echinoderm species, by decade #
+### Echinoderm species, by decade
 
 ```{r decade.facet, message=FALSE, fig.cap="\\label{fig:decade.facet} Mean abundance of each echinoderm species observed at San Nicolas Island, by decade."}
 ##facet by species
@@ -180,7 +180,7 @@ facet_wrap(~Species, scales="free")
 ```
 Echinoderm abundance also varied by species throughout the decades included within this dataset. The 1990s (shown in green in Figure \ref{fig:decade.facet}) consistently demonstrated lower echinoderm abundance among species. Strongylocentrotus species (sea urchins) showed different temporal pattens by species, with S. purpuratus showing highest mean abundances within the 2000s, and S. franciscanus showing highest mean abundances within the 1980s, albeit prior to both the 1982 El Nino event and the 1987 otter reintroduction. 
 
-## Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino #
+### Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino
 
 ```{r kelp, message=FALSE, fig.cap="\\label{fig:kelp} Mean abundance of each kelp phylum observed at San Nicolas Island, from 1980 to 2011 Gray shading indicates El Nino events; dashed line indicates sea otter reintroduction."}
 # Subsetting by algae: 
@@ -204,7 +204,7 @@ ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance,
 ```
 Figure \ref{fig:kelp} shows the change in abundance over time for each phylum of algae. No consistent patterns were observed that applied to all algae phyla; however, some trends were noted within groups. For brown algae (Phaeophyta), declines in abundance took place after both El Nino events, while red algae (Phaeophyta) increased in abundance after both. Brown algae also declined after 1987 (the year of otter reintroduction) following an initial increase. Red algae did not exhibit any notable change in abundance post-reintroduction. Green algal abundance remained relatively low throughout all decades monitored, and did not have a notable response to either El Nino events or otter reintroduction.
 
-## Linear regression between annual abundances of brown algae and echinoderms
+### Linear regression between annual abundances of brown algae and echinoderms
 
 ```{r lm, message=FALSE, fig.cap="\\label{fig:lm} Relationship between mean annual abundance of echinoderms and brown algae, including best fit line."}
 # Echinoderms versus algae, by year #
