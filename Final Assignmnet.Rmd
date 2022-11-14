@@ -6,10 +6,6 @@ output: pdf_document
 fig_caption: yes
 ---
 
-## Introduction
-
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -64,15 +60,6 @@ kelp_cleaned = select(kelp_cleaned, Abundance, Phylum, Species, Plot, Latitude, 
 
 head(kelp_cleaned)
 ```
-
-
-## Graphs
-
-(1) Seasonal patterns, by phylum
-(2) Echinoderms over time (before/after sea otters and El Nino events)
-(3) Echinoderms by decade
-(4) Sea urchins over time (before/after sea otters and El Nino events)
-(5) Algal abundance over time (before/after sea otters and El Nino events)
 
 ## Seasonal patterns, by phylum
 
@@ -168,57 +155,10 @@ echinoderm_decades <- kelp_cleaned %>%
   select(Abundance, Phylum, Species, Year, Decades) %>% 
   filter(Phylum=="Echinodermata") 
   
-##Plotting
-ggplot(data=echinoderm_decades,
-       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
-geom_point() + geom_line()
-
-##facet species
-ggplot(data=echinoderm_decades,
-       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
-  geom_point() + geom_line()+
-  facet_wrap(~Species)
-  
-##re-introduction of sea otters
-ggplot(data=echinoderm_decades,
-       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
-  geom_point() + geom_line()+
-geom_vline(xintercept= 1987, color= 'black') 
-
-##facet species
-ggplot(data=echinoderm_decades,
-       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
-  geom_point() + geom_line()+
-  geom_vline(xintercept= 1987, color= 'black') +
-facet_wrap(~Species)
-
-##El Nino Events 
-ggplot(data=echinoderm_decades,
-       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
-  geom_point() + geom_line() +
-geom_vline(xintercept= 1983, color= 'black') + 
-  geom_vline(xintercept= 1998, color= 'black')
-  
-##facet species
-ggplot(data=echinoderm_decades,
-       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
-  geom_point() + geom_line() +
-  geom_vline(xintercept= 1983, color= 'black') + 
-  geom_vline(xintercept= 1998, color= 'black')+
-facet_wrap(~Species)
-
-##El Nino events and sea otters 
-ggplot(data=echinoderm_decades,
-       aes(x= Year, y=Abundance, color= Decades, by=Decades)) +
-  geom_point() + geom_line() +
-  geom_vline(xintercept= 1983, color= 'black') + 
-  geom_vline(xintercept= 1998, color= 'black')+
-  geom_vline(xintercept= 1987, color= 'black')
-  
-# ***ADDED***** ANOVA testing whether decades is a significant factor in Echinoderm abundance variation:
+# ANOVA testing whether decades is a significant factor in Echinoderm abundance variation:
 decades.aov <- summary(aov(data=echinoderm_decades, Abundance~Decades))
 
-# ***ADDED***** Averages and bar graph
+# Averages and bar graph
 echinoderm_decades2 <- kelp_cleaned %>% 
   select(Abundance, Phylum, Species, Year, Decades) %>% 
   filter(Phylum=="Echinodermata") %>%
@@ -234,7 +174,7 @@ ggplot(data=echinoderm_decades2, aes(x= Decades, y=MeanAbundance)) + geom_col() 
 ```
 The differences in echinoderm abundance observed between decades were found to be significant using a one-way ANOVA, with decade as a factor (p=`r decades.aov[[1]][[1,"Pr(>F)"]]`). The decade with lowest echinoderm abundance was the 1990s (Figure \ref{fig:decades}).
 
-# ALSO ADDED: This would consolidate the old sea urchins graph with echinoderm species graph ####
+# Echinoderm species, by decade #
 
 ```{r decade.facet, fig.cap="\\label{fig:decade.facet} Mean abundance of each echinoderm species observed at San Nicolas Island, by decade."}
 
@@ -285,7 +225,7 @@ ggplot(data=algae_year, aes(x=Year, y=Mean_Abundance,
 ```
 Figure \ref{fig:kelp} shows the change in abundance over time for each phylum of algae. No consistent patterns were observed that applied to all algae phyla; however, some trends were noted within groups. For brown algae (Phaeophyta), declines in abundance took place after both El Nino events, while red algae (Phaeophyta) increased in abundance after both. Brown algae also declined after 1987 (the year of otter reintroduction) following an initial increase. Red algae did not exhibit any notable change in abundance post-reintroduction. Green algal abundance remained relatively low throughout all decades monitored, and did not have a notable response to either El Nino events or otter reintroduction.
 
-## Statistics: Linear regression to see relationship between annual abundances of brown algae and echinoderms
+## Linear regression between annual abundances of brown algae and echinoderms
 
 ```{r lm, fig.cap="\\label{fig:lm} Relationship between mean annual abundance of echinoderms and brown algae, including best fit line."}
 
