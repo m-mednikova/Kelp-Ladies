@@ -3,6 +3,7 @@ title: "Results and Analysis"
 author: "Elizabeth Martin, Marjorie Mednikova, Riplee Mercer"
 date: "November 15, 2022"
 output: pdf_document
+fig_caption: yes
 ---
 
 ```{r setup, include=FALSE}
