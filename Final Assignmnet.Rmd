@@ -57,9 +57,26 @@ kelp_cleaned <- left_join(kelp_cleaned, phylum, by="Species")
 ## Organizing Columns
 kelp_cleaned = select(kelp_cleaned, Abundance, Phylum, Species, Plot, Latitude, Longitude, Date, Year, Month, Day)
 
-
-head(kelp_cleaned)
 ```
+
+## All phyla, over time
+
+```{r time, fig.cap="\\label{fig:time} Mean annual abundance of each phyla observed at San Nicolas Island, from 1980 to 2011."}
+
+annual.means <- kelp_cleaned %>%
+  group_by(Year, Phylum) %>%
+  filter(Phylum!="Unknown") %>%
+  summarize(MeanAbundance=mean(Abundance))
+
+ggplot(data=annual.means, aes(x=Year, y=MeanAbundance, 
+                              by=Phylum, color=Phylum)) +
+      geom_point() + geom_line() + 
+      labs(x="Year", y="Mean Abundance") + facet_wrap(~Phylum,
+      scales="free") + theme(legend.position="none")
+  
+```
+
+Each phylum exhibited different trends in abundance over time (Figure \ref{fig:time}). Overall increasing abundance was noted for Annelida and Cnidaria. Several phyla exhibited large peaks, including Crustacea, Chlorophyta (green algae), Ochrophyta, and Bryozoa. Notably, many phyla demonstrated large increases in mean abundance within the early 2000s. Finally, Phaeophyta (brown algae) demonstrated an overall decreasing trend, with several notable drops prior to 1985 and 2000. 
 
 ## Seasonal patterns, by phylum
 
