@@ -61,7 +61,7 @@ kelp_cleaned = select(kelp_cleaned, Abundance, Phylum, Species, Plot, Latitude, 
 
 ## All phyla, over time
 
-```{r time, fig.cap="\\label{fig:time} Mean annual abundance of each phyla observed at San Nicolas Island, from 1980 to 2011."}
+```{r time, message=FALSE, fig.cap="\\label{fig:time} Mean annual abundance of each phyla observed at San Nicolas Island, from 1980 to 2011."}
 
 annual.means <- kelp_cleaned %>%
   group_by(Year, Phylum) %>%
@@ -80,7 +80,7 @@ Each phylum exhibited different trends in abundance over time (Figure \ref{fig:t
 
 ## Seasonal patterns, by phylum
 
-```{r Seasons, fig.cap="\\label{fig:season} Mean seasonal abundance of each phyla observed at San Nicolas Island, from 1980 to 2011."}
+```{r Seasons, message=FALSE, fig.cap="\\label{fig:season} Mean seasonal abundance of each phyla observed at San Nicolas Island, from 1980 to 2011."}
 # Phylum abundance by season
 
 # Create function using if-else statement to determine season:
@@ -128,7 +128,7 @@ Few phyla exhibited seasonal patterns, especially given the high standard deviat
 
 ## Abundance of Echinoderms over time, with lines for otter reintroduction and El Nino ##
 
-```{r Echinodermata before vs after sea otters, fig.cap="\\label{fig:echino} Mean abundance of echinoderms observed at San Nicolas Island, from 1980 to 2011. Gray shading indicates 1982-1983 and 1997-1998 El Nino events. The dashed vertical line represents the 1987 reintroduction of sea otters."}
+```{r Echinodermata before vs after sea otters, message=FALSE, fig.cap="\\label{fig:echino} Mean abundance of echinoderms observed at San Nicolas Island, from 1980 to 2011. Gray shading indicates 1982-1983 and 1997-1998 El Nino events. The dashed vertical line represents the 1987 reintroduction of sea otters."}
 
 ## Subset by phylum
 echinodermata_year <- kelp_cleaned %>% 
@@ -151,9 +151,9 @@ ggplot(data= echinodermata_year, aes(x= Year, y= Mean_Abundance,
 ```
 Echinoderm abundance exhibited notable changes that coincided with multiple environmental events (Figure \ref{fig:echino}). Declines were observed during both El Nino events, in 1982-1983 and 1997-1998. Echinoderm populations also declined following the 1987 sea otter reintroduction. Finally, echinoderm abundance increased substantially following both El Nino events, and returned to pre-otter introduction in the early 2000s. Abundance has oscillated since.  
 
-# Abundance of Echinoderms over time, grouped by decade -- *****NOTE:: suggestions for consolidation at the bottom of this code chunk
+# Abundance of Echinoderms over time, grouped by decade 
 
-```{r Decades, fig.cap="\\label{fig:decades} Mean abundance of echinoderms at San Nicolas Island, by decade."}
+```{r Decades, message=FALSE, fig.height=3, fig.cap="\\label{fig:decades} Mean abundance of echinoderms at San Nicolas Island, by decade."}
 
 #Creating a Decades column:
 
@@ -193,7 +193,7 @@ The differences in echinoderm abundance observed between decades were found to b
 
 # Echinoderm species, by decade #
 
-```{r decade.facet, fig.cap="\\label{fig:decade.facet} Mean abundance of each echinoderm species observed at San Nicolas Island, by decade."}
+```{r decade.facet, message=FALSE, fig.cap="\\label{fig:decade.facet} Mean abundance of each echinoderm species observed at San Nicolas Island, by decade."}
 
 ##facet by species
 
@@ -218,7 +218,7 @@ Echinoderm abundance also varied by species throughout the decades included with
 
 ## Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino #
 
-```{r kelp, fig.cap="\\label{fig:kelp} Mean abundance of each kelp phylum observed at San Nicolas Island, from 1980 to 2011 Gray shading indicates El Nino events; dashed line indicates sea otter reintroduction."}
+```{r kelp, message=FALSE, fig.cap="\\label{fig:kelp} Mean abundance of each kelp phylum observed at San Nicolas Island, from 1980 to 2011 Gray shading indicates El Nino events; dashed line indicates sea otter reintroduction."}
 
 # Subsetting by algae: 
 algae_year <- kelp_cleaned %>%
@@ -244,7 +244,7 @@ Figure \ref{fig:kelp} shows the change in abundance over time for each phylum of
 
 ## Linear regression between annual abundances of brown algae and echinoderms
 
-```{r lm, fig.cap="\\label{fig:lm} Relationship between mean annual abundance of echinoderms and brown algae, including best fit line."}
+```{r lm, message=FALSE, fig.cap="\\label{fig:lm} Relationship between mean annual abundance of echinoderms and brown algae, including best fit line."}
 
 # Echinoderms versus algae, by year #
 echino.algae <- kelp_cleaned %>%
