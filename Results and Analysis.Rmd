@@ -221,4 +221,3 @@ echino.model <- lm(data=echino.algae, Phaeophyta~Echinodermata)
 echino.model <- summary(echino.model)
 ```
 A linear regression model run on mean annual abundance of both echinoderms and brown algae (Figure \ref{fig:lm}) indicated that there was no significant correlation between the two species' abundances (p=`r round(echino.model$coefficients[2,4],2)`). The R squared value of `r round(echino.model$r.squared, 2)` was also low, indicating little to no linear relationship between the two phyla.  
-Footer
