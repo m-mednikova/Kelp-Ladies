@@ -180,7 +180,7 @@ facet_wrap(~Species, scales="free")
 ```
 Echinoderm abundance also varied by species throughout the decades included within this dataset. The 1990s (shown in green in Figure \ref{fig:decade.facet}) consistently demonstrated lower echinoderm abundance among species. Strongylocentrotus species (sea urchins) showed different temporal pattens by species, with S. purpuratus showing highest mean abundances within the 2000s, and S. franciscanus showing highest mean abundances within the 1980s, albeit prior to both the 1982 El Nino event and the 1987 otter reintroduction. 
 
-### Mean abundance of kelp (by phyla) over time, with lines for otter introduction and El Nino
+### Mean abundance of algae (by phyla) over time, with lines for otter introduction and El Nino
 
 ```{r kelp, message=FALSE, fig.cap="\\label{fig:kelp} Mean abundance of each kelp phylum observed at San Nicolas Island, from 1980 to 2011 Gray shading indicates El Nino events; dashed line indicates sea otter reintroduction."}
 # Subsetting by algae: 
