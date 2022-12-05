@@ -314,3 +314,29 @@ To highlight whether or not there was a relationship between Phaeophyta populati
 
 *Future research priorities*
 Future research on this kelp community would be helpful to build upon this study in the future. Improvements in future data collection should include more consistency in observation techniques, especially naming of species/phylums that are being observed. There were many species that were named differently throughout the data set, or not consistently named to species level. There were also several “unknown'' species or phyla which made analyses of these observations impossible. Additionally, these data were collected based on abundance alone, which in a long term data set can be observed differently depending on who is collecting the data. More precise measurements such as biomass of each observation would give this data set more credibility and decrease the chances of bias in data collection. This data set focuses on major events such as El Nino and sea otter reintroduction. It would have been helpful to be able to look at sea surface temperature in conjunction with El Nino events which are known for increasing water temperatures. Additional monitoring of environmental parameters would decrease speculation as to what aspects of El Nino events impacted this kelp community. 
+
+## References 
+
+Dayton, P. K. (1985). Ecology of kelp communities. Annual review of ecology and systematics, 215-245.
+
+Dornelas M, Antão LH, Moyes F, Bates, AE, Magurran, AE, et al. BioTIME: A database of biodiversity time series for the Anthropocene. Global Ecol Biogeogr. 2018; 27:760 - 786. https://doi.org/10.1111/geb.12729
+
+Ebeling, A. W., & Laur, D. R. (1988). Fish populations in kelp forests without sea otters: effects of severe storm damage and destructive sea urchin grazing. In The community ecology of sea otters (pp. 169-191). Springer, Berlin, Heidelberg.
+
+Estes, J. A., Danner, E. M., Doak, D. F., Konar, B., Springer, A. M., Steinberg, P. D., ... & Williams, T. M. (2004). Complex trophic interactions in kelp forest ecosystems. Bulletin of marine science, 74(3), 621-638.
+
+Kenner, M. C., Estes, J. A., Tinker, M. T., Bodkin, J. L., Cowen, R. K., Harrold, C., ... & Reed, D. C. (2013). A multi-decade time series of kelp forest community structure at San Nicolas Island, California. Ecological Archives E, 94, 244.
+
+Ladah, L. B., & Zertuche-González, J. A. (2007). Survival of microscopic stages of a perennial kelp (Macrocystis pyrifera) from the center and the southern extreme of its range in the Northern Hemisphere after exposure to simulated El Niño stress. Marine Biology, 152(3), 677-686.
+
+Markel, R. W., & Shurin, J. B. (2015). Indirect effects of sea otters on rockfish (Sebastes spp.) in giant kelp forests. Ecology, 96(11), 2877-2890.
+
+Rathbun, G. B., Hatfield, B. B., & Murphey, T. G. (2000). Status of Translocated Sea Otters at San Nicolas Island, California. The Southwestern Naturalist, 45(3), 322–328. https://doi.org/10.2307/3672835
+
+Shelton, A. O., Harvey, C. J., Samhouri, J. F., Andrews, K. S., Feist, B. E., Frick, K. E., ... & Berry, H. D. (2018). From the predictable to the unexpected: kelp forest and benthic invertebrate community dynamics following decades of sea otter expansion. Oecologia, 188(4), 1105-1119.
+
+Tegner, M. J., & Dayton, P. K. (1987). El Niño effects on southern California kelp forest communities. In Advances in ecological research (Vol. 17, pp. 243-279). Academic Press.
+
+Tegner, M. J., & Dayton, P. K. (1991). Sea urchins, El Ninos, and the long term stability of Southern California kelp forest communities. Marine ecology progress series. Oldendorf, 77(1), 49-63.
+
+U.S. Fish & Wildlife Service. (2022). Southern Sea Otter. Retrieved December 5, 2022 from https://www.fws.gov/species/southern-sea-otter-enhydra-lutris-nereis. 
